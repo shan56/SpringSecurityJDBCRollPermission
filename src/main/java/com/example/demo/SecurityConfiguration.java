@@ -19,7 +19,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
-                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/admin").hasRole("ADMIN")
                 .antMatchers("/**").hasAnyRole("ADMIN", "USER")
                 .and()
@@ -30,14 +29,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll();
-
-
-        //adding following code will able to see h2 DB via localhost:8080/h2-console
-        httpSecurity.csrf()
-                .ignoringAntMatchers("/h2-console/**");
-        httpSecurity.headers()
-                .frameOptions()
-                .sameOrigin();
     }
 
     /*
@@ -57,6 +48,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .withUser(User.withUsername("user")
                         .password(passwordEncoder().encode("user"))
                         .roles("USER"))
+                .withUser(User.withUsername("sue")
+                        .password(passwordEncoder().encode("sue"))
+                        .roles("USER", "ADMIN"))
                 .withUser(User.withUsername("admin")
                         .password(passwordEncoder().encode("admin"))
                         .roles("ADMIN"));
